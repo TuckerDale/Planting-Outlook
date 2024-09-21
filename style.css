@@ -1,0 +1,205 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    box-sizing: border-box;
+}
+body{
+    background: #222;
+}
+.card{
+    width: 100%;
+    height: 200%;
+    max-width: 1000px;
+    /* max-height: 1000px; */
+    background: linear-gradient(135deg, #14b134, #0c5404);
+    color: #fff;
+    margin: 0px auto 0;
+    border-radius: 20px;
+    padding: 40px 35px;
+    text-align: center;
+}
+.search{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.glowing-location{
+    border: 0;
+    outline: 0;
+    background: #ebfffc;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    cursor: pointer;
+    animation: pulse-glow 0.5s infinite alternate; /*Animation effect*/
+}
+
+@keyframes pulse-glow {
+    from {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+    }
+    to {
+        box-shadow: 0 0 40px rgba(0, 255, 255, 1), 0 0 80px rgba(0, 255, 255, 0.8);
+    }
+}
+.no-glow {
+    border: 0;
+    outline: 0;
+    background: #ebfffc;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    cursor: pointer;
+    box-shadow: none; /* No glow */
+     animation: none;  /*Stop animation*/
+}  
+.search .userLocation button img{
+    width: 32px;
+}
+.search input{
+    border: 0;
+    outline: 0;
+    background: #ebfffc;
+    color: #555;
+    padding: 10px 25px;
+    height: 60px;
+    border-radius: 30px;
+    flex: 1;
+    margin-left: 16px;
+    margin-right: 16px;
+    font-size: 18px;
+
+}
+.search button{
+    border: 0;
+    outline: 0;
+    background: #ebfffc;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+}
+.search button img{
+    width: 16px;
+}
+.weather-icon{
+    width: 170px;
+    margin-top: 30px;
+}
+.weather h1{
+    font-size: 80px;
+    font-weight: 500;
+}
+.weather h2{
+    font-size: 45px;
+    font-weight: 400;
+    margin-top: -10px;
+}
+
+
+
+
+.weather {
+    display: none;
+}
+
+.popup{
+    width: 400px;
+    background: #fff;
+    border-radius: 6px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0.1);
+    text-align: center;
+    padding: 0px 30px 30px;
+    color: #333;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+}
+.open-popup{
+    visibility: visible;
+    top: 50%;
+    transform: translate(-50%,-50%) scale(1);
+}
+.popup input{
+    border: 0;
+    outline: 0;
+    background: #ebfffc;
+    color: #555;
+    padding: 10px 25px;
+    width: 200px;
+    height: 60px;
+    border-radius: 30px;
+    flex: 1;
+    margin-left: 16px;
+    margin-right: 16px;
+    font-size: 18px;
+}
+.popup button{
+    border: 0;
+    outline: 0;
+    background: #ebfffc;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+}
+.popup button img{
+    width: 16px;
+}
+.popup p{
+    font-size: 20px;
+    margin: 30px 0 10px;
+}
+.error{
+    text-align: center;
+    font-size: 20px;
+    color: rgb(193, 27, 27);
+    display: none;
+}
+.card h2{
+    padding-bottom: 30px;
+}
+.appContainer {
+    display: flex;
+    justify-content: flex-end; 
+    width: 100%;
+    margin-left: 12%;
+}
+
+.appInfo {
+    width: 50%; 
+}
+
+.appInfo li {
+    list-style-type: none;
+    display: flex;
+    align-items: center; 
+    margin-bottom: 10px; 
+}
+
+.appInfo img {
+    width: 32px;
+    margin-right: 10px; 
+}
+
+.appInfo p {
+    font-size: 18px;
+    margin: 0; 
+}
+.appInfo h3 {
+    font-size: 24px;
+    margin-bottom: 10px; 
+    text-align: left;
+}
+#flowerTempIcon{
+    width: 48px;
+    margin-right: -4px; 
+    
+}
+
+
+

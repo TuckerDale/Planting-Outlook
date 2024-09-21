@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name = "viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gardening + Weather Outlook</title>
+    <link rel="stylesheet" href="style.css">
+
+
+</head>
+<body>
+<div class="card">
+  <h2 class="instruction">Click the location icon; then, enter your desired plant!</h2>
+  <div class="plant-info"></div>
+
+    <div class="search">
+        <div class="userLocation">
+            <button class ="glowing-location" id="userLocationButton" onclick="getLocation()"><img src="weather-app-images/location.png"></button>
+        </div>
+        <input type="text" placeholder="enter your plant name 🌱" spellcheck="false">
+        <button id="searchButton"><img src="weather-app-images/search.png"></button>
+    </div>
+    <div class="popup" id="popup">
+            <p>Please allow geolocation, or enter your city here:</p>
+            <input type="text" placeholder="enter plant name" spellcheck="false">
+            <button id="popupSearchButton"><img src="weather-app-images/search.png"></button>
+            <div class="error">
+              <p>Invalid City Name</p>
+            </div>
+          </div>
+    <div class="weather">
+        <img src="weather-app-images/clear.png" class="weather-icon">
+        
+        <h1 class="temp">--</h1>
+        <h2 class="city">Columbus</h2>
+        <div class="appContainer">
+        <div class="appInfo">
+            <h3>Current Weather</h3>
+            <ul>
+            
+                <li >
+                    <img src="weather-app-images/feelsLikeWarm.png" class="feelsLikeIcon">
+                    <p class="feelsLike">Feels Like: --°F</p>
+                    <!-- <p>Feels Like</p> -->
+                </li>
+                
+                <li >
+                    <img src="weather-app-images/wind.png">
+                    <p class="wind">Wind Speed: --mph</p>
+                    <!-- <p>Wind Speed</p> -->
+                </li>
+                
+                <li >
+                    <img src="weather-app-images/humidity.png">
+                    <p class="humidity">Humidity: --%</p>
+                    <!-- <p>Humidity</p> -->
+                </li>
+                <li >
+                    <img src="weather-app-images/soilTemp.png" class="soilTempIcon">
+                    <p class="currentSoilTemp">Soil Temp: --°F</p>
+                    <!-- <p>Soil Temp</p> -->
+                </li>
+                <li >
+                    <img src="weather-app-images/soilMoisture.png" class="soilMoistureIcon">
+                    <p class="currentSoilMoisture">Soil Moisture: </p>
+                    <!-- <p>Soil Moisture</p> -->
+                </li>
+            </ul>
+            </div>
+            <div class="appInfo">
+                <h3 class="plantHeading">Planting Info</h3>
+                <li>
+                    <img src="weather-app-images/flowerTemp.png" id="flowerTempIcon">
+                <p class="plantTemp">Temp: --°F</p>
+                </li>
+                <li >
+                    <img src="weather-app-images/clear.png" class="sunIcon">
+                    <p class="plantSun">Sun Conditions: --°F</p>
+                </li>
+                <li >
+                    <img src="weather-app-images/frost.jpg.webp" class="frostIcon">
+                    <p class="frost">First Frost: </p>
+                </li>
+                <li >
+                    <img src="weather-app-images/soilTemp.png" class="soilTempIcon">
+                    <p class="plantSoilTemp">Soil Temp: --°F</p>
+                </li>
+                <li >
+                    <img src="weather-app-images/soilMoisture.png" class="soilMoistureIcon">
+                    <p class="plantSoilMoisture">Soil Moisture: --</p>
+                </li>
+
+            </div>
+                <div class="plantWatering">
+                    <h4>Planting Analysis</h4>
+                    <p></p>
+                </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
