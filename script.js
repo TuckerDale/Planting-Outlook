@@ -1,15 +1,14 @@
 const AIUrl = "https://api.openai.com/v1/chat/completions";
-const AIKey = YOUR_OPENAI_API_KEY;
+const AIKey = "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";
 
 const soilURL = "http://api.agromonitoring.com/agro/1.0/soil";
-const soilKey = YOUR_SOIL_API_KEY;
+const soilKey = "e9b61da1d8a4f4af84fbf0c4ef02c636";
 
 let popup = document.getElementById("popup");
+
 const userLocationButton = document.getElementById("userLocationButton");
-let lat, lon;
-let locationGiven = false;
-let plantGiven = false;
-let plantName, cityName;
+
+let lat, lon,plantName, cityName,locationGiven = false,  plantGiven = false;
 
 // Initialize the polygonMap to store city and polygon ID
 let polygonMap = new Map();
@@ -48,7 +47,7 @@ function getLocation() {
   }
 }
 
-const weatherApiKey = YOUR_WEATHER_API_KEY;
+const weatherApiKey = "eea3d41105f705dbc76c7b10c71c37a7";
 const weatherApiUrl = "https://api.openweathermap.org/data/2.5/weather?";
 const units = "&units=imperial";
 
@@ -70,7 +69,7 @@ async function reverseCoords(lat, lon) {
 }
 let currentWeather;
 async function checkWeather(city) {
-  // Normalize the city input
+  // reformat the city input
   city = city.trim().toLowerCase();
 
   const response = await fetch(weatherApiUrl + "&q=" + city + `&appid=${weatherApiKey}` + units);
@@ -80,7 +79,7 @@ async function checkWeather(city) {
   } else {
     var data = await response.json();
 
-    // Store cityName in a normalized form
+    // Store cityName in reformatted way
     const normalizedCity = data.name.trim().toLowerCase();
     cityName = normalizedCity;
 
@@ -129,7 +128,7 @@ async function checkWeather(city) {
   }
 }
 
-// Normalize the manual city input and compare it to geolocation result
+// Reformat the manual city input, compare it to geolocation result
 citySearchButton.addEventListener("click", () => {
   const manualCity = citySearchBox.value.trim().toLowerCase();
   checkWeather(manualCity);
@@ -151,7 +150,7 @@ async function getSoilData(polygonId) {
         polygonMap.delete(cityName);
         saveMapToLocalStorage();
 
-        // Attempt to recreate the polygon
+        //recreate the polygon
         getSoilInfo(lat, lon, cityName);
         return;
       }
@@ -181,7 +180,7 @@ async function getSoilData(polygonId) {
 }
 
 async function getSoilInfo(lat, lon, city) {
-  // Create a larger polygon around the user's location (about 1 ha or more)
+  // Create a polygon around the user's location (about 1 ha or more)
   const polygon = {
     name: "User_Location_Polygon",
     geo_json: {
@@ -298,8 +297,8 @@ plantSearchButton.addEventListener("click", () => {
 const epsilon = 0.0001; // Small value for float comparison
 
 function isSoilMoistureIdeal(currentMoisture, optimalMoisture) {
-  const lowerBound = optimalMoisture - 0.15; // Optimal - 0.15
-  const upperBound = optimalMoisture + 0.15; // Optimal + 0.15
+  const lowerBound = optimalMoisture - 0.15; 
+  const upperBound = optimalMoisture + 0.15; 
 
   return (currentMoisture > lowerBound - epsilon && currentMoisture < upperBound + epsilon);
 }
