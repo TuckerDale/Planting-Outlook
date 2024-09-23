@@ -1,8 +1,8 @@
 const AIUrl = "https://api.openai.com/v1/chat/completions";
-const AIKey = "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";
+const AIKey = YOUR_OPENAI_API_KEY;
 
 const soilURL = "http://api.agromonitoring.com/agro/1.0/soil";
-const soilKey = "e9b61da1d8a4f4af84fbf0c4ef02c636";
+const soilKey = YOUR_SOIL_API_KEY;
 
 let popup = document.getElementById("popup");
 
@@ -47,7 +47,7 @@ function getLocation() {
   }
 }
 
-const weatherApiKey = "eea3d41105f705dbc76c7b10c71c37a7";
+const weatherApiKey = YOUR_WEATHER_API_KEY;
 const weatherApiUrl = "https://api.openweathermap.org/data/2.5/weather?";
 const units = "&units=imperial";
 
