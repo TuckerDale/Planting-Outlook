@@ -1,8 +1,8 @@
 const AIUrl = "https://api.openai.com/v1/chat/completions";
-const AIKey = "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";
+const AIKey = YOUR_OPENAI_API_KEY;
 
 const soilURL = "http://api.agromonitoring.com/agro/1.0/soil";
-const soilKey = "e9b61da1d8a4f4af84fbf0c4ef02c636";
+const soilKey = YOUR_SOIL_API_KEY;
 
 let popup = document.getElementById("popup");
 const userLocationButton = document.getElementById("userLocationButton");
@@ -48,7 +48,7 @@ function getLocation() {
   }
 }
 
-const weatherApiKey = "eea3d41105f705dbc76c7b10c71c37a7";
+const weatherApiKey = YOUR_WEATHER_API_KEY;
 const weatherApiUrl = "https://api.openweathermap.org/data/2.5/weather?";
 const units = "&units=imperial";
 
@@ -68,7 +68,7 @@ async function reverseCoords(lat, lon) {
   const city = data[0].name;
   checkWeather(city);
 }
-
+let currentWeather;
 async function checkWeather(city) {
   // Normalize the city input
   city = city.trim().toLowerCase();
@@ -106,6 +106,10 @@ async function checkWeather(city) {
     document.querySelector(".humidity").innerHTML = "Humidity: " + data.main.humidity + "%";
     document.querySelector(".wind").innerHTML = "Wind Speed: " + Math.round(data.wind.speed) + " mph";
     document.querySelector(".feelsLike").innerHTML = "Feels Like: " + Math.round(data.main.feels_like) + "°F";
+    currentWeather = {
+      temp:  Math.round(data.main.temp),
+      sun: data.weather[0].main 
+    }
 
     if (data.weather[0].main == "Clear") {
       weatherIcon.src = "weather-app-images/clear.png";
@@ -134,7 +138,7 @@ citySearchButton.addEventListener("click", () => {
 
 
 
-
+let currentSoil;
 async function getSoilData(polygonId) {
   try {
     const soilResponse = await fetch(`${soilURL}?polyid=${polygonId}&appid=${soilKey}`);
@@ -160,8 +164,13 @@ async function getSoilData(polygonId) {
     const soilData = await soilResponse.json();
     const soilTempKelvin = soilData.t0;
     const soilMoisture = soilData.moisture;
+
     console.log(soilData);
     const soilTempFahrenheit = (soilTempKelvin - 273.15) * 9/5 + 32;
+    currentSoil = {
+      temp: soilTempFahrenheit,
+      moisture: soilMoisture
+    }
 
     document.querySelector(".currentSoilTemp").textContent = `Soil Temp: ${Math.round(soilTempFahrenheit)}°F`;
     document.querySelector(".currentSoilMoisture").textContent = `Soil Moisture: ${soilMoisture} m³/m³`;
@@ -226,16 +235,16 @@ async function getSoilInfo(lat, lon, city) {
 }
 
 
-
+let optimalConditions;
 async function checkPlant(plant){
   try{
     const prompt = `Only give short,exact number responses, or one word response:Give the optimal planting conditions about the flower "${plant}" in this format:
-  Sun conditions: 
-  Temp: 
-  Soil temp:
+  Sun conditions: [Full Sun, Partly Cloudy]
+  Average Temp: [one number °F ]
+  Soil temp: [°F]
   Soil moisture: [in m³/m³]
   First frost for "${cityName}" : [e.g. Nov 18th] 
-  Watering needs:`;
+  Days until first frost: [e.g. 20]`;
     const response = await fetch(AIUrl, {
       method: "POST",
       headers: {
@@ -244,7 +253,8 @@ async function checkPlant(plant){
       },
       body: JSON.stringify({
         model: "gpt-3.5-turbo",
-        max_completion_tokens: 70,
+        temperature: 0.2,
+        max_completion_tokens: 200,
         messages: [{role: "user", content: prompt}]
       })
     })
@@ -260,15 +270,21 @@ async function checkPlant(plant){
       const soilTemp = result.split('\n')[2].split(': ')[1];
       const soilMoisture = result.split('\n')[3].split(': ')[1];
       const frost  = result.split('\n')[4].split(': ')[1];
-      const wateringNeeds = result.split('\n')[5].split(': ')[1];
-      
+      const frostDays = result.split('\n')[5].split(': ')[1];
+      optimalConditions = {
+        temp: parseInt(temp.substring(0,2)),
+        soilTemp: parseInt(soilTemp.substring(0,2)) ,
+        soilMoisture:parseFloat(soilMoisture.substring(0,4)),
+        sun: sunConditions,
+        frost: parseInt(frostDays.substring(0,2))
+      }
       document.querySelector(".plantSun").textContent = "Sun Conditions: "+ sunConditions ;
       document.querySelector(".plantTemp").textContent = "Temperature: " + temp  ;
       document.querySelector(".plantSoilTemp").textContent = "Soil Temperature: " + soilTemp ;
       document.querySelector(".plantSoilMoisture").textContent = "Soil Moisture: " + soilMoisture;
       document.querySelector(".frost").textContent = "First Frost: " + frost ;
       displayReady();
-      //document.querySelector('.plantWatering').textContent = wateringNeeds || 'N/A';
+      
   }catch(error) {
     console.error("Error: ", error);
   }
@@ -279,6 +295,59 @@ plantSearchButton.addEventListener("click", () => {
   checkPlant(plantSearchBox.value);
 });
 
+const epsilon = 0.0001; // Small value for float comparison
+
+function isSoilMoistureIdeal(currentMoisture, optimalMoisture) {
+  const lowerBound = optimalMoisture - 0.15; // Optimal - 0.15
+  const upperBound = optimalMoisture + 0.15; // Optimal + 0.15
+
+  return (currentMoisture > lowerBound - epsilon && currentMoisture < upperBound + epsilon);
+}
+
+function plantingSummary(weather,soil,optimal) {
+  let count = 0;
+  const summary = [];
+  if ((weather.temp >= optimal.temp-10)&&(weather.temp <= optimal.temp+10)) {
+    count++;
+    summary.push("Your current temperature is ideal.");
+  } else{
+    summary.push("Your current temperature is not ideal.");
+  }
+  if ( ((weather.sun=="Clear")&&(optimal.sun == "Full Sun"))  || ((weather.sun=="Clouds")&&(optimal.sun == "Partly Cloudy")) ) {
+    count++;
+    summary.push("Your current sun conditions are ideal.");
+  } else{
+    summary.push("Your current sun conditions are not ideal.");
+  }
+   if ((soil.temp >= optimal.soilTemp-5)&&(soil.temp <= optimal.soilTemp+5)) {
+    count++;
+    summary.push("Your current soil temperature is ideal.");
+  } else{
+    console.log(soil.temp);
+    console.log(optimal.soilTemp);
+    summary.push("Your current soil temperature is not ideal.");
+  }
+  if (isSoilMoistureIdeal(soil.moisture, optimal.soilMoisture)) {
+    count++;
+    summary.push("Your current soil moisture is ideal.");
+  } else{
+    console.log(soil.moisture);
+    console.log(optimal.soilMoisture);
+    summary.push("Your current soil moisture is not ideal.");
+  } 
+  if (optimal.frostDays >= 30) {
+    count++;
+    summary.push(`You have enough time until the first frost for your ${plantName} to succeed.`);
+  } else{
+    summary.push(`You don't have enough time until the first frost for plant your ${plantName} to succeed.`);
+  } 
+  if (count >= 2) {
+    document.querySelector(".planting-summary").innerHTML = `Overall, now is a great time to plant, as ${count} optimal conditions are met! ` + summary.join(" ");
+  } else {
+    document.querySelector(".planting-summary").innerHTML = `Overall, now is not a great time to plant, as ${count} optimal condition(s) are met! ` + summary.join(" ");
+  }
+}
+
 function displayReady() {
   if (locationGiven && !plantGiven) {
     document.querySelector(".instruction").innerHTML =
@@ -287,8 +356,9 @@ function displayReady() {
     document.querySelector(".instruction").innerHTML =
       "Your plant: " + plantName + ". Now, enter your location to retrieve currrent weather conditions!";
   } else if (locationGiven && plantGiven) {
+    plantingSummary(currentWeather,currentSoil,optimalConditions);
     document.querySelector(".instruction").innerHTML =
-      "Here are the current planting conditions for " + plantName + "'s in " + cityName + "!";
+      "Here are the current planting conditions for your " + plantName + " in " + cityName + "!";
     document.querySelector(".weather").style.display = "block";
   }
 }

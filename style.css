@@ -12,7 +12,7 @@ body{
     height: 200%;
     max-width: 1000px;
     /* max-height: 1000px; */
-    background: linear-gradient(135deg, #14b134, #0c5404);
+    background: linear-gradient(135deg, #08c3f2, #18cf04);
     color: #fff;
     margin: 0px auto 0;
     border-radius: 20px;
@@ -199,6 +199,9 @@ body{
     width: 48px;
     margin-right: -4px; 
     
+}
+.planting-summary{
+    font-size: 18px;
 }
 
 
